@@ -8,5 +8,8 @@ branches:
     - master
     - develop
 install:
-  - go get ./...
+  - go get github.com/pkg/errors
+  - go get github.com/pborman/uuid
+  - go get github.com/onsi/ginkgo/ginkgo
+  - go get github.com/onsi/gomega
 script: go test -v --cover ./...
