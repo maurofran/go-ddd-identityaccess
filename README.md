@@ -1,2 +1,2 @@
 # go-ddd-identityaccess
-Go Port of IDDD_Samples Identity Access.
+Go Port of Vaughn Vernon IDDD Samples Identity Access repository.
