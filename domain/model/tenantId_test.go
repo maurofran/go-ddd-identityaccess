@@ -35,12 +35,6 @@ var _ = Describe("TenantID", func() {
 		tenantID, _ = NewTenantID(id)
 	})
 
-	Describe("ID", func () {
-		It("Should return the id", func () {
-			Expect(tenantID.ID()).Should(Equal(id))
-		})
-	})
-
 	Describe("Equals", func () {
 		It("Should be equals to itself", func () {
 			Expect(tenantID.Equals(tenantID)).To(BeTrue())

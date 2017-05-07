@@ -58,47 +58,26 @@ var _ = Describe("Tenant", func() {
 		tenantId, _ = NewTenantID(id)
 		tenant, _ = NewTenant(tenantId, "streamtune", "Streamtune", true)
 	})
-
-	Describe("TenantID", func() {
-		It("Should return the unique tenant id", func() {
-			Expect(tenant.TenantID()).To(BeEquivalentTo(tenantId))
-		})
-	})
-	Describe("Name", func() {
-		It("Should return the unique tenant name", func() {
-			Expect(tenant.Name()).To(Equal("streamtune"))
-		})
-	})
-	Describe("Description", func() {
-		It("Should return the tenant description", func() {
-			Expect(tenant.Description()).To(Equal("Streamtune"))
-		})
-	})
-	Describe("Active", func() {
-		It("Should return the activation status", func() {
-			Expect(tenant.Active()).To(BeTrue())
-		})
-	})
 	Describe("Activate", func() {
 		It("Should do nothing if tenant is active", func() {
 			tenant.Activate()
-			Expect(tenant.Active()).To(BeTrue())
+			Expect(tenant.Active).To(BeTrue())
 		})
 		It("Should activate the tenant if it's not active", func() {
 			tenant.Deactivate()
 			tenant.Activate()
-			Expect(tenant.Active()).To(BeTrue())
+			Expect(tenant.Active).To(BeTrue())
 		})
 	})
 	Describe("Deactivate", func() {
 		It("Should deactivate the tenant if it's active", func() {
 			tenant.Deactivate()
-			Expect(tenant.Active()).To(BeFalse())
+			Expect(tenant.Active).To(BeFalse())
 		})
 		It("Should do nothing if tenant it's deactivated", func() {
 			tenant.Deactivate()
 			tenant.Deactivate()
-			Expect(tenant.Active()).To(BeFalse())
+			Expect(tenant.Active).To(BeFalse())
 		})
 	})
 	Describe("Equals", func() {

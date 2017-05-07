@@ -7,6 +7,8 @@ branches:
   only:
     - master
     - develop
+services:
+  - mongodb
 install:
   - go get gopkg.in/mgo.v2
   - go get github.com/pkg/errors
