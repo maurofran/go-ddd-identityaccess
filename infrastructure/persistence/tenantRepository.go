@@ -34,7 +34,12 @@ func NewTenantRepository(db *mgo.Database) *TenantRepository {
 
 // Add will add a new tenant to repository, returning an error if the operation fails.
 func (tr *TenantRepository) Add(ctx context.Context, tenant *model.Tenant) error {
+	if tenant == nil {
+		return errors.New("tenant is required")
+	}
+	id := bson.NewObjectId()
 	err := tr.c.Insert(bson.M{
+		"_id":         id,
 		"_v":          0,
 		"tenantId":    tenant.TenantID.ID,
 		"name":        tenant.Name,
@@ -42,16 +47,21 @@ func (tr *TenantRepository) Add(ctx context.Context, tenant *model.Tenant) error
 		"active":      tenant.Active,
 	})
 	if err != nil {
-		return errors.Wrapf(err, "An error occurred while adding tenant %s to repository", tenant)
+		return errors.Wrapf(err, "an error occurred while adding tenant %s to repository", tenant)
 	}
+	tenant.ID = id
+	tenant.Version = 0
 	return nil
 }
 
 // Update will update an existing tenant actually stored into repository, returning an error if the operation fails.
 func (tr *TenantRepository) Update(ctx context.Context, tenant *model.Tenant) error {
+	if tenant == nil {
+		return errors.New("tenant is required")
+	}
 	err := tr.c.Update(
 		bson.M{
-			"id": tenant.ID,
+			"_id": tenant.ID,
 			"_v": tenant.Version,
 		},
 		bson.M{
@@ -66,19 +76,22 @@ func (tr *TenantRepository) Update(ctx context.Context, tenant *model.Tenant) er
 		},
 	)
 	if err != nil {
-		return errors.Wrapf(err, "An error occurred while updating tenant %s", tenant)
+		return errors.Wrapf(err, "an error occurred while updating tenant %s", tenant)
 	}
 	return nil
 }
 
 // Remove will remove an existing tenant from repository, returning an error if the operation fails.
 func (tr *TenantRepository) Remove(ctx context.Context, tenant *model.Tenant) error {
+	if tenant == nil {
+		return errors.New("tenant is required")
+	}
 	err := tr.c.Remove(bson.M{
-		"id": tenant.ID,
+		"_id": tenant.ID,
 		"_v": tenant.Version,
 	})
 	if err != nil {
-		return errors.Wrapf(err, "An error occurred while removing tenant %s from repository", tenant)
+		return errors.Wrapf(err, "an error occurred while removing tenant %s from repository", tenant)
 	}
 	return nil
 }
