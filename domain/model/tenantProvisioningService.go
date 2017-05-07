@@ -22,7 +22,7 @@ func (tps *TenantProvisioningService) ProvisionTenant(
 	ctx context.Context,
 	tenantName,
 	tenantDescription string,
-	administratorName interface{},
+	administratorName *FullName,
 	emailAddress interface{},
 	postalAddress interface{},
 	primaryTelephone interface{},
@@ -48,7 +48,7 @@ func (tps *TenantProvisioningService) ProvisionTenant(
 
 func (tps *TenantProvisioningService) registerAdministratorFor(
 	tenant *Tenant,
-	administratorName interface{},
+	administratorName *FullName,
 	emailAddress interface{},
 	postalAddress interface{},
 	primaryTelephone interface{},
