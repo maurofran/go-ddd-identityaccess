@@ -62,7 +62,7 @@ func (tr *TenantRepository) Update(ctx context.Context, tenant *model.Tenant) er
 	err := tr.c.Update(
 		bson.M{
 			"_id": tenant.ID,
-			"_v": tenant.Version,
+			"_v":  tenant.Version,
 		},
 		bson.M{
 			"$inc": bson.M{
@@ -88,7 +88,7 @@ func (tr *TenantRepository) Remove(ctx context.Context, tenant *model.Tenant) er
 	}
 	err := tr.c.Remove(bson.M{
 		"_id": tenant.ID,
-		"_v": tenant.Version,
+		"_v":  tenant.Version,
 	})
 	if err != nil {
 		return errors.Wrapf(err, "an error occurred while removing tenant %s from repository", tenant)
@@ -99,6 +99,9 @@ func (tr *TenantRepository) Remove(ctx context.Context, tenant *model.Tenant) er
 // TenantOfId will retrieve a tenant for a given unique tenant id, returning the tenant or an error if the operation
 // fails.
 func (tr *TenantRepository) TenantOfId(ctx context.Context, id *model.TenantID) (*model.Tenant, error) {
+	if id == nil {
+		return nil, errors.New("tenantId is required")
+	}
 	t := new(tenant)
 	if err := tr.c.Find(bson.M{"tenantId": id.ID}).One(t); err != nil {
 		if err == mgo.ErrNotFound {
