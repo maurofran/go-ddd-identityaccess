@@ -6,19 +6,25 @@ import (
 	"github.com/maurofran/go-ddd-identityaccess/domain/model"
 	"github.com/pkg/errors"
 	"gopkg.in/go-playground/validator.v9"
+	"strings"
 )
 
 // IdentityApplicationService is the application service used to manage identities.
 type IdentityApplicationService struct {
-	validate         *validator.Validate
-	tenantRepository model.TenantRepository
+	validate                  *validator.Validate
+	tenantRepository          model.TenantRepository
+	tenantProvisioningService model.TenantProvisioningService
 }
 
 // NewIdentityApplicationService will create a new identity application service instance.
-func NewIdentityApplicationService(tenantRepository model.TenantRepository) *IdentityApplicationService {
+func NewIdentityApplicationService(
+	tenantRepository model.TenantRepository,
+	tenantProvisioningService model.TenantProvisioningService,
+) *IdentityApplicationService {
 	ias := new(IdentityApplicationService)
 	ias.validate = validator.New()
 	ias.tenantRepository = tenantRepository
+	ias.tenantProvisioningService = tenantProvisioningService
 	return ias
 }
 
@@ -27,7 +33,41 @@ func (ias *IdentityApplicationService) ProvisionTenant(ctx context.Context, comm
 	if err := ias.validate.Struct(command); err != nil {
 		return err
 	}
-	return nil
+	administratorName, err := model.NewFullName(command.AdministratorFirstName, command.AdministratorLastName)
+	if err != nil {
+		return errors.Wrap(err, "an error occurred while creating administrator full name")
+	}
+	emailAddress, err := model.NewEmailAddress(command.EmailAddress)
+	if err != nil {
+		return errors.Wrap(err, "an error occurred while creating administrator email address")
+	}
+	postalAddress, err := model.NewPostalAddress(command.AddressStreetName, command.AddressBuildingNumber,
+		command.AddressPostalCode, command.AddressCity, command.AddressStateProvince, command.AddressCountryCode)
+	if err != nil {
+		return errors.Wrap(err, "an error occurred while creating administrator postal address")
+	}
+	primaryTelephone, err := model.NewTelephone(command.PrimaryTelephone)
+	if err != nil {
+		return errors.Wrap(err, "an error occurred while creating administrator primary telephone")
+	}
+	var secondaryTelephone *model.Telephone
+	if strings.TrimSpace(command.SecondaryTelephone) != "" {
+		secondaryTelephone, err = model.NewTelephone(command.SecondaryTelephone)
+		if err != nil {
+			return errors.Wrap(err, "an error occurred while creating administrator secondary telephone")
+		}
+	}
+	_, err = ias.tenantProvisioningService.ProvisionTenant(
+		ctx,
+		command.TenantName,
+		command.TenantDescription,
+		administratorName,
+		emailAddress,
+		postalAddress,
+		primaryTelephone,
+		secondaryTelephone,
+	)
+	return err
 }
 
 // ActivateTenant will activate the tenant with id provided in command.
