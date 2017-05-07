@@ -24,7 +24,7 @@ func (tps *TenantProvisioningService) ProvisionTenant(
 	tenantDescription string,
 	administratorName *FullName,
 	emailAddress *EmailAddress,
-	postalAddress interface{},
+	postalAddress *PostalAddress,
 	primaryTelephone *Telephone,
 	secondaryTelephone *Telephone,
 ) (*Tenant, error) {
@@ -50,7 +50,7 @@ func (tps *TenantProvisioningService) registerAdministratorFor(
 	tenant *Tenant,
 	administratorName *FullName,
 	emailAddress *EmailAddress,
-	postalAddress interface{},
+	postalAddress *PostalAddress,
 	primaryTelephone *Telephone,
 	secondaryTelephone *Telephone,
 ) error {
