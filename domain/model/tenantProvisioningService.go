@@ -23,7 +23,7 @@ func (tps *TenantProvisioningService) ProvisionTenant(
 	tenantName,
 	tenantDescription string,
 	administratorName *FullName,
-	emailAddress interface{},
+	emailAddress *EmailAddress,
 	postalAddress interface{},
 	primaryTelephone interface{},
 	secondaryTelephone interface{},
@@ -49,7 +49,7 @@ func (tps *TenantProvisioningService) ProvisionTenant(
 func (tps *TenantProvisioningService) registerAdministratorFor(
 	tenant *Tenant,
 	administratorName *FullName,
-	emailAddress interface{},
+	emailAddress *EmailAddress,
 	postalAddress interface{},
 	primaryTelephone interface{},
 	secondaryTelephone interface{},
