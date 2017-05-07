@@ -6,6 +6,7 @@ import (
 	"github.com/pkg/errors"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
+	"github.com/pborman/uuid"
 )
 
 const tenants = "tenants"
@@ -30,6 +31,11 @@ func NewTenantRepository(db *mgo.Database) *TenantRepository {
 	tr := new(TenantRepository)
 	tr.c = db.C(tenants)
 	return tr
+}
+
+// NextIdentity will generate
+func (tr *TenantRepository) NextIdentity() (*model.TenantID, error) {
+	return model.NewTenantID(uuid.NewRandom().String())
 }
 
 // Add will add a new tenant to repository, returning an error if the operation fails.

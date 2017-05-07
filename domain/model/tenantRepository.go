@@ -4,6 +4,9 @@ import "context"
 
 // TenantRepository is the interface that represents the collection of tenants.
 type TenantRepository interface {
+	// NextIdentity will generate a new tenant identifier.
+	NextIdentity() (*TenantID, error)
+
 	// Add will add a new tenant to repository, returning an error if the operation fails.
 	Add(ctx context.Context, tenant *Tenant) error
 
