@@ -25,8 +25,8 @@ func (tps *TenantProvisioningService) ProvisionTenant(
 	administratorName *FullName,
 	emailAddress *EmailAddress,
 	postalAddress interface{},
-	primaryTelephone interface{},
-	secondaryTelephone interface{},
+	primaryTelephone *Telephone,
+	secondaryTelephone *Telephone,
 ) (*Tenant, error) {
 	tenantID, err := tps.tenantRepository.NextIdentity()
 	if err != nil {
@@ -51,8 +51,8 @@ func (tps *TenantProvisioningService) registerAdministratorFor(
 	administratorName *FullName,
 	emailAddress *EmailAddress,
 	postalAddress interface{},
-	primaryTelephone interface{},
-	secondaryTelephone interface{},
+	primaryTelephone *Telephone,
+	secondaryTelephone *Telephone,
 ) error {
 	return nil
 }
