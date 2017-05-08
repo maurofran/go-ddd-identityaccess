@@ -11,8 +11,8 @@ var _ = Describe("NewFullName", func() {
 	It("Should return a new full name", func() {
 		fn, err := NewFullName("Foo", "Baz")
 		Expect(fn).ToNot(BeNil())
-		Expect(fn.FirstName).To(Equal("Foo"))
-		Expect(fn.LastName).To(Equal("Baz"))
+		Expect(fn.FirstName()).To(Equal("Foo"))
+		Expect(fn.LastName()).To(Equal("Baz"))
 		Expect(err).ShouldNot(HaveOccurred())
 	})
 	It("Should return an error if first name is empty", func() {
@@ -40,6 +40,16 @@ var _ = Describe("FullName", func() {
 		fixture, _ = NewFullName("Foo", "Baz")
 	})
 
+	Describe("FirstName", func() {
+		It("Should return the first name", func() {
+			Expect(fixture.FirstName()).To(Equal("Foo"))
+		})
+	})
+	Describe("LastName", func() {
+		It("Should return the last name", func() {
+			Expect(fixture.LastName()).To(Equal("Baz"))
+		})
+	})
 	Describe("AsFormattedName", func() {
 		It("Should return the formatted name", func() {
 			Expect(fixture.AsFormattedName()).To(Equal("Foo Baz"))
@@ -49,8 +59,8 @@ var _ = Describe("FullName", func() {
 		It("Should return a new full name with changed first name", func() {
 			nfm, err := fixture.WithChangedFirstName("Bar")
 			Expect(nfm).ToNot(BeNil())
-			Expect(nfm.FirstName).To(Equal("Bar"))
-			Expect(nfm.LastName).To(Equal("Baz"))
+			Expect(nfm.FirstName()).To(Equal("Bar"))
+			Expect(nfm.LastName()).To(Equal("Baz"))
 			Expect(err).ShouldNot(HaveOccurred())
 		})
 		It("Should return an error with empty first name", func() {
@@ -68,8 +78,8 @@ var _ = Describe("FullName", func() {
 		It("Should return a new full name with changed last name", func() {
 			nfm, err := fixture.WithChangedLastName("Bar")
 			Expect(nfm).ToNot(BeNil())
-			Expect(nfm.FirstName).To(Equal("Foo"))
-			Expect(nfm.LastName).To(Equal("Bar"))
+			Expect(nfm.FirstName()).To(Equal("Foo"))
+			Expect(nfm.LastName()).To(Equal("Bar"))
 			Expect(err).ShouldNot(HaveOccurred())
 		})
 		It("Should return an error with empty first name", func() {

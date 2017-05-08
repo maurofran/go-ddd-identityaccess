@@ -11,10 +11,10 @@ var numberPattern = regexp.MustCompile("^(?:\\+\\d{2})\\d{3,}$")
 
 // Telephone is the value object for telephone number.
 //
-// NOTE: Number is intended to be read-only. The property is exposed only for persistence purpose and it should NEVER
+// NOTE: number is intended to be read-only. The property is exposed only for persistence purpose and it should NEVER
 // be modified directly.
 type Telephone struct {
-	Number string
+	number string
 }
 
 // NewTelephone is the factory function to create new telephone instances.
@@ -26,15 +26,20 @@ func NewTelephone(number string) (*Telephone, error) {
 		return nil, errors.New("number format is invalid")
 	}
 	t := new(Telephone)
-	t.Number = number
+	t.number = number
 	return t, nil
+}
+
+// Number is the telephone number.
+func (t *Telephone) Number() string {
+	return t.number
 }
 
 func (t *Telephone) Equals(other interface{}) bool {
 	ot, ok := other.(*Telephone)
-	return ok && ot.Number == t.Number
+	return ok && ot.number == t.number
 }
 
 func (t *Telephone) String() string {
-	return fmt.Sprintf("Telephone [number=%s]", t.Number)
+	return fmt.Sprintf("Telephone [number=%s]", t.number)
 }

@@ -11,7 +11,7 @@ var _ = Describe("NewTelephone", func() {
 	It("Should create a new telephone", func() {
 		telephone, err := NewTelephone("+39123456")
 		Expect(telephone).ShouldNot(BeNil())
-		Expect(telephone.Number).To(Equal("+39123456"))
+		Expect(telephone.Number()).To(Equal("+39123456"))
 		Expect(err).ShouldNot(HaveOccurred())
 	})
 	It("Should return an error if number is empty", func() {
@@ -35,6 +35,11 @@ var _ = Describe("Telephone", func() {
 		fixture, _ = NewTelephone("+3912345678")
 	})
 
+	Describe("Number", func() {
+		It("Should return the number", func() {
+			Expect(fixture.Number()).To(Equal("+3912345678"))
+		})
+	})
 	Describe("Equals", func() {
 		It("Should be equal to itself", func() {
 			Expect(fixture.Equals(fixture)).To(BeTrue())

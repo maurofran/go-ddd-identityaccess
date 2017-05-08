@@ -11,12 +11,12 @@ import (
 // NOTE: The properties of this struct are intended to be read-only. The property are exposed only for persistence
 // purpose and they should NEVER be modified directly.
 type PostalAddress struct {
-	StreetName     string
-	BuildingNumber string
-	PostalCode     string
-	City           string
-	StateProvince  string
-	CountryCode    string
+	streetName     string
+	buildingNumber string
+	postalCode     string
+	city           string
+	stateProvince  string
+	countryCode    string
 }
 
 // NewPostalAddress will create a new postal address instance.
@@ -40,30 +40,60 @@ func NewPostalAddress(streetName, buildingNumber, postalCode, city, stateProvinc
 		return nil, errors.New("countryCode must be 2 characters")
 	}
 	pa := new(PostalAddress)
-	pa.StreetName = streetName
-	pa.BuildingNumber = buildingNumber
-	pa.PostalCode = postalCode
-	pa.City = city
-	pa.StateProvince = stateProvince
-	pa.CountryCode = countryCode
+	pa.streetName = streetName
+	pa.buildingNumber = buildingNumber
+	pa.postalCode = postalCode
+	pa.city = city
+	pa.stateProvince = stateProvince
+	pa.countryCode = countryCode
 	return pa, nil
+}
+
+// StreetName is the name of the street.
+func (pa *PostalAddress) StreetName() string {
+	return pa.streetName
+}
+
+// BuildingNumber is the number of building.
+func (pa *PostalAddress) BuildingNumber() string {
+	return pa.buildingNumber
+}
+
+// PostalCode is the postal code.
+func (pa *PostalAddress) PostalCode() string {
+	return pa.postalCode
+}
+
+// City of address.
+func (pa *PostalAddress) City() string {
+	return pa.city
+}
+
+// StateProvince part of address.
+func (pa *PostalAddress) StateProvince() string {
+	return pa.stateProvince
+}
+
+// CountryCode part of address.
+func (pa *PostalAddress) CountryCode() string {
+	return pa.countryCode
 }
 
 func (pa *PostalAddress) Equals(other interface{}) bool {
 	opa, ok := other.(*PostalAddress)
-	return ok && pa.StreetName == opa.StreetName && pa.BuildingNumber == opa.BuildingNumber &&
-		pa.PostalCode == opa.PostalCode && pa.City == opa.City && pa.StateProvince == opa.StateProvince &&
-		pa.CountryCode == opa.CountryCode
+	return ok && pa.streetName == opa.streetName && pa.buildingNumber == opa.buildingNumber &&
+		pa.postalCode == opa.postalCode && pa.city == opa.city && pa.stateProvince == opa.stateProvince &&
+		pa.countryCode == opa.countryCode
 }
 
 func (pa *PostalAddress) String() string {
 	return fmt.Sprintf(
 		"PostalAddress [streetName=%s, buildingNumber=%s, postalCode=%s, city=%s, stateProvince=%s, countryCode=%s]",
-		pa.StreetName,
-		pa.BuildingNumber,
-		pa.PostalCode,
-		pa.City,
-		pa.StateProvince,
-		pa.CountryCode,
+		pa.streetName,
+		pa.buildingNumber,
+		pa.postalCode,
+		pa.city,
+		pa.stateProvince,
+		pa.countryCode,
 	)
 }
