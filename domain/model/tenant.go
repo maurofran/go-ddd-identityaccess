@@ -12,12 +12,12 @@ import (
 // keep well separated domain and persistence layer.
 // Every direct change to Tenant fields can produce unexpected results.
 type Tenant struct {
-	ID          interface{}
-	Version     int
-	TenantID    *TenantID
-	Name        string
-	Description string
-	Active      bool
+	id          interface{}
+	version     int
+	tenantID    *TenantID
+	name        string
+	description string
+	active      bool
 }
 
 // NewTenant will create a new tenant from provided parameters.
@@ -38,18 +38,38 @@ func NewTenant(tenantID *TenantID, name, description string, active bool) (*Tena
 	return t, nil
 }
 
+// TenantID will return the tenant id
+func (t *Tenant) TenantID() *TenantID {
+	return t.tenantID
+}
+
+// Name will retrieve the tenant name
+func (t *Tenant) Name() string {
+	return t.name
+}
+
+// Description will retrieve the tenant description
+func (t *Tenant) Description() string {
+	return t.description
+}
+
+// Active is the active status of tenant
+func (t *Tenant) Active() bool {
+	return t.active
+}
+
 // Activate will activate the receiver tenant if it's not already active.
 func (t *Tenant) Activate() {
-	if !t.Active {
-		t.Active = true
+	if !t.Active() {
+		t.setActive(true)
 		// TODO raise TenantActivated event
 	}
 }
 
 // Deactivate will deactivate the receiver tenant if it's not already active.
 func (t *Tenant) Deactivate() {
-	if t.Active {
-		t.Active = false
+	if t.Active() {
+		t.setActive(false)
 		// TODO raise TenantDeactivated event
 	}
 }
@@ -58,7 +78,7 @@ func (t *Tenant) setTenantID(tenantID *TenantID) error {
 	if tenantID == nil {
 		return errors.New("tenantID is required")
 	}
-	t.TenantID = tenantID
+	t.tenantID = tenantID
 	return nil
 }
 
@@ -66,7 +86,7 @@ func (t *Tenant) setName(name string) error {
 	if strings.TrimSpace(name) == "" {
 		return errors.New("name is required")
 	}
-	t.Name = name
+	t.name = name
 	return nil
 }
 
@@ -74,27 +94,27 @@ func (t *Tenant) setDescription(description string) error {
 	if strings.TrimSpace(description) == "" {
 		return errors.New("description is required")
 	}
-	t.Description = description
+	t.description = description
 	return nil
 }
 
 func (t *Tenant) setActive(active bool) error {
-	t.Active = active
+	t.active = active
 	return nil
 }
 
 // Equals will check if this tenant is equal to provided object.
 func (t *Tenant) Equals(other interface{}) bool {
 	ot, ok := other.(*Tenant)
-	return ok && t.TenantID.Equals(ot.TenantID) && t.Name == ot.Name
+	return ok && t.tenantID.Equals(ot.tenantID) && t.name == ot.name
 }
 
 func (t *Tenant) String() string {
 	return fmt.Sprintf(
 		"Tenant [tenantID=%s, name=%s, description=%s, active=%t]",
-		t.TenantID,
-		t.Name,
-		t.Description,
-		t.Active,
+		t.tenantID,
+		t.name,
+		t.description,
+		t.active,
 	)
 }

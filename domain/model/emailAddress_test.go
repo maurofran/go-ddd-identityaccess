@@ -11,7 +11,7 @@ var _ = Describe("NewEmailAddress", func() {
 	It("Should create a new email address", func() {
 		email, err := NewEmailAddress("foo.baz@test.com")
 		Expect(email).ShouldNot(BeNil())
-		Expect(email.Address).To(Equal("foo.baz@test.com"))
+		Expect(email.Address()).To(Equal("foo.baz@test.com"))
 		Expect(err).ShouldNot(HaveOccurred())
 	})
 	It("Should return an error if email is null", func() {
@@ -35,6 +35,11 @@ var _ = Describe("EmailAddress", func() {
 		fixture, _ = NewEmailAddress("foo.baz@test.com")
 	})
 
+	Describe("Address", func() {
+		It("Should return the address", func() {
+			Expect(fixture.Address()).To(Equal("foo.baz@test.com"))
+		})
+	})
 	Describe("Equals", func() {
 		It("Should be equal to itself", func() {
 			Expect(fixture.Equals(fixture)).To(BeTrue())

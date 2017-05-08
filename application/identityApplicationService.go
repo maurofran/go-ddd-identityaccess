@@ -39,10 +39,10 @@ func (ias *IdentityApplicationService) Tenant(ctx context.Context, tenantId stri
 		return nil, nil
 	}
 	return &representation.Tenant{
-		TenantID:    tenant.TenantID.ID,
-		Name:        tenant.Name,
-		Description: tenant.Description,
-		Active:      tenant.Active,
+		TenantID:    tenant.TenantID().ID(),
+		Name:        tenant.Name(),
+		Description: tenant.Description(),
+		Active:      tenant.Active(),
 	}, nil
 }
 

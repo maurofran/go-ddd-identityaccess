@@ -11,12 +11,12 @@ var _ = Describe("NewPostalAddress", func() {
 	It("Should create a new postal address", func() {
 		postalAddress, err := NewPostalAddress("6th St.", "123", "32904", "Melbourne", "FL", "US")
 		Expect(postalAddress).ShouldNot(BeNil())
-		Expect(postalAddress.StreetName).To(Equal("6th St."))
-		Expect(postalAddress.BuildingNumber).To(Equal("123"))
-		Expect(postalAddress.PostalCode).To(Equal("32904"))
-		Expect(postalAddress.City).To(Equal("Melbourne"))
-		Expect(postalAddress.StateProvince).To(Equal("FL"))
-		Expect(postalAddress.CountryCode).To(Equal("US"))
+		Expect(postalAddress.StreetName()).To(Equal("6th St."))
+		Expect(postalAddress.BuildingNumber()).To(Equal("123"))
+		Expect(postalAddress.PostalCode()).To(Equal("32904"))
+		Expect(postalAddress.City()).To(Equal("Melbourne"))
+		Expect(postalAddress.StateProvince()).To(Equal("FL"))
+		Expect(postalAddress.CountryCode()).To(Equal("US"))
 		Expect(err).ShouldNot(HaveOccurred())
 	})
 	It("Should return an error if streetName is empty", func() {
@@ -72,6 +72,36 @@ var _ = Describe("PostalAddress", func() {
 		fixture, _ = NewPostalAddress("6th St.", "123", "32904", "Melbourne", "FL", "US")
 	})
 
+	Describe("StreetName", func() {
+		It("Should return the street name", func() {
+			Expect(fixture.StreetName()).To(Equal("6th St."))
+		})
+	})
+	Describe("BuildingNumber", func() {
+		It("Should return the building number", func() {
+			Expect(fixture.BuildingNumber()).To(Equal("123"))
+		})
+	})
+	Describe("PostalCode", func() {
+		It("Should return the postal code", func() {
+			Expect(fixture.PostalCode()).To(Equal("32904"))
+		})
+	})
+	Describe("City", func() {
+		It("Should return the city", func() {
+			Expect(fixture.City()).To(Equal("Melbourne"))
+		})
+	})
+	Describe("StateProvince", func() {
+		It("Should return the state/province", func() {
+			Expect(fixture.StateProvince()).To(Equal("FL"))
+		})
+	})
+	Describe("CountryCode", func() {
+		It("Should return the country code", func() {
+			Expect(fixture.CountryCode()).To(Equal("US"))
+		})
+	})
 	Describe("Equals", func() {
 		It("Should be equal to itself", func() {
 			Expect(fixture.Equals(fixture)).To(BeTrue())
