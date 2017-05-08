@@ -3,6 +3,7 @@ package application
 import (
 	"context"
 	"github.com/maurofran/go-ddd-identityaccess/application/command"
+	"github.com/maurofran/go-ddd-identityaccess/application/representation"
 	"github.com/maurofran/go-ddd-identityaccess/domain/model"
 	"github.com/pkg/errors"
 	"gopkg.in/go-playground/validator.v9"
@@ -26,6 +27,23 @@ func NewIdentityApplicationService(
 	ias.tenantRepository = tenantRepository
 	ias.tenantProvisioningService = tenantProvisioningService
 	return ias
+}
+
+// Tenant will retrieve the representation of tenant with provided id
+func (ias *IdentityApplicationService) Tenant(ctx context.Context, tenantId string) (*representation.Tenant, error) {
+	tenant, err := ias.existingTenant(ctx, tenantId)
+	if err != nil {
+		return nil, err
+	}
+	if tenant == nil {
+		return nil, nil
+	}
+	return &representation.Tenant{
+		TenantID:    tenant.TenantID.ID,
+		Name:        tenant.Name,
+		Description: tenant.Description,
+		Active:      tenant.Active,
+	}, nil
 }
 
 // ProvisionTenant will provision a new tenant.
