@@ -12,21 +12,9 @@ import (
 
 // IdentityApplicationService is the application service used to manage identities.
 type IdentityApplicationService struct {
-	validate                  *validator.Validate
-	tenantRepository          *model.TenantRepository
-	tenantProvisioningService *model.TenantProvisioningService
-}
-
-// NewIdentityApplicationService will create a new identity application service instance.
-func NewIdentityApplicationService(
-	tenantRepository *model.TenantRepository,
-	tenantProvisioningService *model.TenantProvisioningService,
-) *IdentityApplicationService {
-	ias := new(IdentityApplicationService)
-	ias.validate = validator.New()
-	ias.tenantRepository = tenantRepository
-	ias.tenantProvisioningService = tenantProvisioningService
-	return ias
+	Validate                  *validator.Validate              `inject:""`
+	TenantRepository          *model.TenantRepository          `inject:""`
+	TenantProvisioningService *model.TenantProvisioningService `inject:""`
 }
 
 // Tenant will retrieve the representation of tenant with provided id
@@ -48,7 +36,7 @@ func (ias *IdentityApplicationService) Tenant(ctx context.Context, tenantId stri
 
 // ProvisionTenant will provision a new tenant.
 func (ias *IdentityApplicationService) ProvisionTenant(ctx context.Context, command *command.ProvisionTenant) error {
-	if err := ias.validate.Struct(command); err != nil {
+	if err := ias.Validate.Struct(command); err != nil {
 		return err
 	}
 	administratorName, err := model.NewFullName(command.AdministratorFirstName, command.AdministratorLastName)
@@ -75,7 +63,7 @@ func (ias *IdentityApplicationService) ProvisionTenant(ctx context.Context, comm
 			return errors.Wrap(err, "an error occurred while creating administrator secondary telephone")
 		}
 	}
-	_, err = ias.tenantProvisioningService.ProvisionTenant(
+	_, err = ias.TenantProvisioningService.ProvisionTenant(
 		ctx,
 		command.TenantName,
 		command.TenantDescription,
@@ -90,7 +78,7 @@ func (ias *IdentityApplicationService) ProvisionTenant(ctx context.Context, comm
 
 // ActivateTenant will activate the tenant with id provided in command.
 func (ias *IdentityApplicationService) ActivateTenant(ctx context.Context, command *command.ActivateTenant) error {
-	if err := ias.validate.Struct(command); err != nil {
+	if err := ias.Validate.Struct(command); err != nil {
 		return err
 	}
 	tenant, err := ias.existingTenant(ctx, command.TenantID)
@@ -98,7 +86,7 @@ func (ias *IdentityApplicationService) ActivateTenant(ctx context.Context, comma
 		return errors.Wrapf(err, "an error occurred while activating tenant with id %s", command.TenantID)
 	}
 	tenant.Activate()
-	if err = ias.tenantRepository.Update(ctx, tenant); err != nil {
+	if err = ias.TenantRepository.Update(ctx, tenant); err != nil {
 		return errors.Wrapf(err, "an error occurred while activating tenant with id %s", command.TenantID)
 	}
 	return nil
@@ -106,7 +94,7 @@ func (ias *IdentityApplicationService) ActivateTenant(ctx context.Context, comma
 
 // DeactivateTenant will deactivate the tenant with id provided in command.
 func (ias *IdentityApplicationService) DeactivateTenant(ctx context.Context, command *command.DeactivateTenant) error {
-	if err := ias.validate.Struct(command); err != nil {
+	if err := ias.Validate.Struct(command); err != nil {
 		return err
 	}
 	tenant, err := ias.existingTenant(ctx, command.TenantID)
@@ -114,7 +102,7 @@ func (ias *IdentityApplicationService) DeactivateTenant(ctx context.Context, com
 		return errors.Wrapf(err, "an error occurred while deactivating tenant with id %s", command.TenantID)
 	}
 	tenant.Deactivate()
-	if err = ias.tenantRepository.Update(ctx, tenant); err != nil {
+	if err = ias.TenantRepository.Update(ctx, tenant); err != nil {
 		return errors.Wrapf(err, "an error occurred while deactivating tenant with id %s", command.TenantID)
 	}
 	return nil
@@ -125,5 +113,5 @@ func (ias *IdentityApplicationService) existingTenant(ctx context.Context, tenan
 	if err != nil {
 		return nil, err
 	}
-	return ias.tenantRepository.TenantOfId(ctx, tid)
+	return ias.TenantRepository.TenantOfId(ctx, tid)
 }

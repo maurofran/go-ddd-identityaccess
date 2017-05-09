@@ -8,14 +8,7 @@ import (
 
 // TenantRepository is the interface that represents the collection of tenants.
 type TenantRepository struct {
-	store TenantStore
-}
-
-// NewTenantRepository will create a new tenant repository instance with provided store as backend.
-func NewTenantRepository(store TenantStore) *TenantRepository {
-	tr := new(TenantRepository)
-	tr.store = store
-	return tr
+	Store TenantStore `inject:""`
 }
 
 // NextIdentity will generate a new tenant identifier.
@@ -28,7 +21,7 @@ func (tr *TenantRepository) Add(ctx context.Context, tenant *Tenant) error {
 	if tenant == nil {
 		return errors.New("tenant is required")
 	}
-	id, err := tr.store.Insert(tenant.tenantID.id, tenant.name, tenant.description, tenant.active)
+	id, err := tr.Store.Insert(tenant.tenantID.id, tenant.name, tenant.description, tenant.active)
 	if err != nil {
 		return errors.Wrapf(err, "an error occurred while adding tenant %s to repository", tenant)
 	}
@@ -42,7 +35,7 @@ func (tr *TenantRepository) Update(ctx context.Context, tenant *Tenant) error {
 	if tenant == nil {
 		return errors.New("tenant is required")
 	}
-	version, err := tr.store.Update(tenant.id, tenant.version, tenant.name, tenant.description, tenant.active)
+	version, err := tr.Store.Update(tenant.id, tenant.version, tenant.name, tenant.description, tenant.active)
 	if err != nil {
 		return errors.Wrapf(err, "an error occurred while updating tenant %s", tenant)
 	}
@@ -55,7 +48,7 @@ func (tr *TenantRepository) Remove(ctx context.Context, tenant *Tenant) error {
 	if tenant == nil {
 		return errors.New("tenant is required")
 	}
-	err := tr.store.Delete(tenant.id, tenant.version)
+	err := tr.Store.Delete(tenant.id, tenant.version)
 	if err != nil {
 		return errors.Wrapf(err, "an error occurred while removing tenant %s from repository", tenant)
 	}
@@ -68,7 +61,7 @@ func (tr *TenantRepository) TenantOfId(ctx context.Context, id *TenantID) (*Tena
 	if id == nil {
 		return nil, errors.New("tenantId is required")
 	}
-	t, err := tr.store.FindOneByTenantID(id.id)
+	t, err := tr.Store.FindOneByTenantID(id.id)
 	if err != nil {
 		return nil, errors.Wrapf(err, "An error occurred while retrieving tenant by id %s", id)
 	}
@@ -87,7 +80,7 @@ func (tr *TenantRepository) TenantOfId(ctx context.Context, id *TenantID) (*Tena
 
 // TenantNamed will retrieve the tenant for a given name, returning the tenant or an error if the operation fails.
 func (tr *TenantRepository) TenantNamed(ctx context.Context, name string) (*Tenant, error) {
-	t, err := tr.store.FindOneByName(name)
+	t, err := tr.Store.FindOneByName(name)
 	if err != nil {
 		return nil, errors.Wrapf(err, "An error occurred while retrieving tenant by name %s", name)
 	}

@@ -11,20 +11,17 @@ const tenants = "tenants"
 
 // TenantStore is the mongo db related store for tenants.
 type TenantStore struct {
-	c *mgo.Collection
+	Db *mgo.Database `inject:""`
 }
 
-// NewTenantStore will create a new TenantRepository instance.
-func NewTenantStore(db *mgo.Database) *TenantStore {
-	tr := new(TenantStore)
-	tr.c = db.C(tenants)
-	return tr
+func (ts *TenantStore) tenants() *mgo.Collection {
+	return ts.Db.C(tenants)
 }
 
 // Insert will insert a new tenant into the store.
 func (ts *TenantStore) Insert(tenantID string, name, description string, active bool) (interface{}, error) {
 	id := bson.NewObjectId()
-	err := ts.c.Insert(bson.M{
+	err := ts.tenants().Insert(bson.M{
 		"_id":         id,
 		"_v":          0,
 		"tenantId":    tenantID,
@@ -40,7 +37,7 @@ func (ts *TenantStore) Insert(tenantID string, name, description string, active 
 
 // Update will update an existing tenant actually stored into repository, returning an error if the operation fails.
 func (ts *TenantStore) Update(id interface{}, version int, name, description string, active bool) (int, error) {
-	err := ts.c.Update(
+	err := ts.tenants().Update(
 		bson.M{
 			"_id": id,
 			"_v":  version,
@@ -64,7 +61,7 @@ func (ts *TenantStore) Update(id interface{}, version int, name, description str
 
 // Delete will remove an existing tenant from repository, returning an error if the operation fails.
 func (ts *TenantStore) Delete(id interface{}, version int) error {
-	err := ts.c.Remove(bson.M{
+	err := ts.tenants().Remove(bson.M{
 		"_id": id,
 		"_v":  version,
 	})
@@ -76,7 +73,7 @@ func (ts *TenantStore) Delete(id interface{}, version int) error {
 
 func (ts *TenantStore) FindOneByTenantID(tenantID string) (model.TenantStoreItem, error) {
 	res := tenantStoreItem{}
-	err := ts.c.Find(bson.M{"tenantId": tenantID}).One(&res)
+	err := ts.tenants().Find(bson.M{"tenantId": tenantID}).One(&res)
 	if err != nil {
 		if err == mgo.ErrNotFound {
 			return nil, nil
@@ -88,7 +85,7 @@ func (ts *TenantStore) FindOneByTenantID(tenantID string) (model.TenantStoreItem
 
 func (ts *TenantStore) FindOneByName(name string) (model.TenantStoreItem, error) {
 	res := tenantStoreItem{}
-	err := ts.c.Find(bson.M{"name": name}).One(&res)
+	err := ts.tenants().Find(bson.M{"name": name}).One(&res)
 	if err != nil {
 		if err == mgo.ErrNotFound {
 			return nil, nil

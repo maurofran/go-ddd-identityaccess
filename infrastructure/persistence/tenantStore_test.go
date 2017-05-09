@@ -40,7 +40,7 @@ var _ = Describe("TenantStore", func() {
 	})
 
 	BeforeEach(func() {
-		fixture = NewTenantStore(db)
+		fixture = &TenantStore{Db: db}
 	})
 
 	AfterEach(func() {

@@ -7,14 +7,15 @@ import (
 	"net/http"
 )
 
+// TenantResource is the struct handling the methods for tenants.
 type TenantResource struct {
-	ias *application.IdentityApplicationService
+	IdentityService *application.IdentityApplicationService `inject:""`
 }
 
 // GetTenant will send the tenant with provided tenant id.
 func (tr *TenantResource) GetTenant(w http.ResponseWriter, r *http.Request) error {
 	tenantId := mux.Vars(r)["tenantId"]
-	t, err := tr.ias.Tenant(r.Context(), tenantId)
+	t, err := tr.IdentityService.Tenant(r.Context(), tenantId)
 	if err != nil {
 		return err
 	}

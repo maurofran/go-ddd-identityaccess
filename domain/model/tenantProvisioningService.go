@@ -7,14 +7,7 @@ import (
 
 // TenantProvisioningService is the domain service for provisioning tenants.
 type TenantProvisioningService struct {
-	tenantRepository TenantRepository
-}
-
-// NewTenantProvisioningService will create a new tenant provisioning service instance.
-func NewTenantProvisioningService(tenantRepository TenantRepository) *TenantProvisioningService {
-	tps := new(TenantProvisioningService)
-	tps.tenantRepository = tenantRepository
-	return tps
+	TenantRepository TenantRepository `inject:""`
 }
 
 // ProvisionTenant will provision a new tenant.
@@ -28,7 +21,7 @@ func (tps *TenantProvisioningService) ProvisionTenant(
 	primaryTelephone *Telephone,
 	secondaryTelephone *Telephone,
 ) (*Tenant, error) {
-	tenantID, err := tps.tenantRepository.NextIdentity()
+	tenantID, err := tps.TenantRepository.NextIdentity()
 	if err != nil {
 		return nil, errors.Wrap(err, "an error occurred while generating new tenant ID")
 	}
@@ -36,7 +29,7 @@ func (tps *TenantProvisioningService) ProvisionTenant(
 	if err != nil {
 		return nil, errors.Wrap(err, "an error occurred while creating new tenant")
 	}
-	if err = tps.tenantRepository.Add(ctx, tenant); err != nil {
+	if err = tps.TenantRepository.Add(ctx, tenant); err != nil {
 		return nil, errors.Wrapf(err, "an error occurred while adding tenant %s to repository", tenant)
 	}
 	if err = tps.registerAdministratorFor(tenant, administratorName, emailAddress, postalAddress, primaryTelephone, secondaryTelephone); err != nil {
