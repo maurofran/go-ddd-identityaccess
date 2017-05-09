@@ -12,6 +12,7 @@ services:
 install:
   - go get gopkg.in/mgo.v2
   - go get gopkg.in/go-playground/validator.v9
+  - go get github.com/gorilla/mux
   - go get github.com/pkg/errors
   - go get github.com/pborman/uuid
   - go get github.com/onsi/ginkgo/ginkgo

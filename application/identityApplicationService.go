@@ -13,14 +13,14 @@ import (
 // IdentityApplicationService is the application service used to manage identities.
 type IdentityApplicationService struct {
 	validate                  *validator.Validate
-	tenantRepository          model.TenantRepository
-	tenantProvisioningService model.TenantProvisioningService
+	tenantRepository          *model.TenantRepository
+	tenantProvisioningService *model.TenantProvisioningService
 }
 
 // NewIdentityApplicationService will create a new identity application service instance.
 func NewIdentityApplicationService(
-	tenantRepository model.TenantRepository,
-	tenantProvisioningService model.TenantProvisioningService,
+	tenantRepository *model.TenantRepository,
+	tenantProvisioningService *model.TenantProvisioningService,
 ) *IdentityApplicationService {
 	ias := new(IdentityApplicationService)
 	ias.validate = validator.New()
