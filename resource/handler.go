@@ -1,10 +1,19 @@
 package resource
 
 import (
+	"github.com/Sirupsen/logrus"
 	"gopkg.in/go-playground/validator.v9"
-	"log"
 	"net/http"
+	"os"
 )
+
+var log = logrus.New()
+
+func init() {
+	log.Formatter = &logrus.JSONFormatter{}
+	log.Out = os.Stdout
+	log.Level = logrus.InfoLevel
+}
 
 // Error represents an handler error. It provides methods for an HTTP status code and embeds the built-in error
 // interface.
@@ -39,12 +48,14 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		switch e := err.(type) {
 		case Error:
 			// We can retrieve the status here and write out specific HTTP status code.
-			log.Printf("HTTP %d - %s", e.Status(), e.Error())
+			log.WithField("status", e.Status()).WithField("err", e.Error()).
+				Error("An error occurred while processing request")
 			http.Error(w, e.Error(), e.Status())
 		case validator.ValidationErrors:
 			// TODO Check if provide information about failed validations
 			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		default:
+			log.WithField("err", e.Error()).Error("Unexpected error occurred")
 			// Any error types we don't specifically look out for default to serving a HTTP 500
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		}

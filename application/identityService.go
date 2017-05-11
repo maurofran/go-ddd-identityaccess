@@ -10,15 +10,15 @@ import (
 	"strings"
 )
 
-// IdentityApplicationService is the application service used to manage identities.
-type IdentityApplicationService struct {
+// IdentityService is the application service used to manage identities.
+type IdentityService struct {
 	Validate                  *validator.Validate              `inject:""`
 	TenantRepository          *model.TenantRepository          `inject:""`
 	TenantProvisioningService *model.TenantProvisioningService `inject:""`
 }
 
 // Tenant will retrieve the representation of tenant with provided id
-func (ias *IdentityApplicationService) Tenant(ctx context.Context, tenantId string) (*representation.Tenant, error) {
+func (ias *IdentityService) Tenant(ctx context.Context, tenantId string) (*representation.Tenant, error) {
 	tenant, err := ias.existingTenant(ctx, tenantId)
 	if err != nil {
 		return nil, err
@@ -35,7 +35,7 @@ func (ias *IdentityApplicationService) Tenant(ctx context.Context, tenantId stri
 }
 
 // ProvisionTenant will provision a new tenant.
-func (ias *IdentityApplicationService) ProvisionTenant(ctx context.Context, command *command.ProvisionTenant) error {
+func (ias *IdentityService) ProvisionTenant(ctx context.Context, command *command.ProvisionTenant) error {
 	if err := ias.Validate.Struct(command); err != nil {
 		return err
 	}
@@ -77,7 +77,7 @@ func (ias *IdentityApplicationService) ProvisionTenant(ctx context.Context, comm
 }
 
 // ActivateTenant will activate the tenant with id provided in command.
-func (ias *IdentityApplicationService) ActivateTenant(ctx context.Context, command *command.ActivateTenant) error {
+func (ias *IdentityService) ActivateTenant(ctx context.Context, command *command.ActivateTenant) error {
 	if err := ias.Validate.Struct(command); err != nil {
 		return err
 	}
@@ -93,7 +93,7 @@ func (ias *IdentityApplicationService) ActivateTenant(ctx context.Context, comma
 }
 
 // DeactivateTenant will deactivate the tenant with id provided in command.
-func (ias *IdentityApplicationService) DeactivateTenant(ctx context.Context, command *command.DeactivateTenant) error {
+func (ias *IdentityService) DeactivateTenant(ctx context.Context, command *command.DeactivateTenant) error {
 	if err := ias.Validate.Struct(command); err != nil {
 		return err
 	}
@@ -108,7 +108,7 @@ func (ias *IdentityApplicationService) DeactivateTenant(ctx context.Context, com
 	return nil
 }
 
-func (ias *IdentityApplicationService) existingTenant(ctx context.Context, tenantID string) (*model.Tenant, error) {
+func (ias *IdentityService) existingTenant(ctx context.Context, tenantID string) (*model.Tenant, error) {
 	tid, err := model.NewTenantID(tenantID)
 	if err != nil {
 		return nil, err

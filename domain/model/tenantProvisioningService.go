@@ -7,7 +7,7 @@ import (
 
 // TenantProvisioningService is the domain service for provisioning tenants.
 type TenantProvisioningService struct {
-	TenantRepository TenantRepository `inject:""`
+	TenantRepository *TenantRepository `inject:""`
 }
 
 // ProvisionTenant will provision a new tenant.

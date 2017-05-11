@@ -7,9 +7,13 @@ import (
 	"net/http"
 )
 
-// TenantResource is the struct handling the methods for tenants.
+// TenantResource is the struct handling the methods for Tenants.
 type TenantResource struct {
-	IdentityService *application.IdentityApplicationService `inject:""`
+	IdentityService *application.IdentityService `inject:""`
+}
+
+func (tr *TenantResource) init(router *mux.Router) {
+	router.Handle("/tenants", Handler(tr.GetTenant)).Methods("GET")
 }
 
 // GetTenant will send the tenant with provided tenant id.

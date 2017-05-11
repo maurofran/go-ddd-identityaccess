@@ -9,7 +9,7 @@ import (
 
 const tenants = "tenants"
 
-// TenantStore is the mongo db related store for tenants.
+// TenantStore is the mongo Db related store for tenants.
 type TenantStore struct {
 	Db *mgo.Database `inject:""`
 }
