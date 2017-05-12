@@ -59,19 +59,21 @@ func (t *Tenant) Active() bool {
 }
 
 // Activate will activate the receiver tenant if it's not already active.
-func (t *Tenant) Activate() {
+func (t *Tenant) Activate() []DomainEvent {
 	if !t.Active() {
 		t.setActive(true)
-		// TODO raise TenantActivated event
+		return anEvent(tenantActivated(t.tenantID))
 	}
+	return noEvents
 }
 
 // Deactivate will deactivate the receiver tenant if it's not already active.
-func (t *Tenant) Deactivate() {
+func (t *Tenant) Deactivate() []DomainEvent {
 	if t.Active() {
 		t.setActive(false)
-		// TODO raise TenantDeactivated event
+		return anEvent(tenantDeactivated(t.tenantID))
 	}
+	return noEvents
 }
 
 func (t *Tenant) setTenantID(tenantID *TenantID) error {
@@ -117,4 +119,50 @@ func (t *Tenant) String() string {
 		t.description,
 		t.active,
 	)
+}
+
+/*
+ * Events.
+ */
+
+// TenantProvisioned is the event raised when a tenant is provisioned.
+type TenantProvisioned struct {
+	domainEvent
+	tenantID *TenantID
+}
+
+func tenantProvisioned(tenantID *TenantID) *TenantProvisioned {
+	return &TenantProvisioned{domainEvent: newDomainEvent(1), tenantID: tenantID}
+}
+
+func (ev *TenantProvisioned) TenantID() *TenantID {
+	return ev.tenantID
+}
+
+// TenantActivated is the domain event for tenant activation.
+type TenantActivated struct {
+	domainEvent
+	tenantID *TenantID
+}
+
+func tenantActivated(tenantID *TenantID) *TenantActivated {
+	return &TenantActivated{domainEvent: newDomainEvent(1), tenantID: tenantID}
+}
+
+func (ev *TenantActivated) TenantID() *TenantID {
+	return ev.tenantID
+}
+
+// TenantDeactivated is the domain event for tenant deactivation.
+type TenantDeactivated struct {
+	domainEvent
+	tenantID *TenantID
+}
+
+func tenantDeactivated(tenantID *TenantID) *TenantDeactivated {
+	return &TenantDeactivated{domainEvent: newDomainEvent(1), tenantID: tenantID}
+}
+
+func (ev *TenantDeactivated) TenantID() *TenantID {
+	return ev.tenantID
 }
