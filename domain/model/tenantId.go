@@ -36,7 +36,7 @@ func (tid *TenantID) setID(id string) error {
 // Equals check if provided object is equal to this tenant identifier.
 func (tid *TenantID) Equals(other interface{}) bool {
 	otid, ok := other.(*TenantID)
-	return ok && tid.id == otid.id
+	return ok && otid != nil && tid.id == otid.id
 }
 
 func (tid *TenantID) String() string {

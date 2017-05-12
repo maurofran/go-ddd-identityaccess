@@ -38,7 +38,7 @@ func (email *EmailAddress) Address() string {
 // Equals will check if provided object is equal to receiver email address.
 func (email *EmailAddress) Equals(other interface{}) bool {
 	oemail, ok := other.(*EmailAddress)
-	return ok && email.address == oemail.address
+	return ok && oemail != nil && email.address == oemail.address
 }
 
 func (email *EmailAddress) String() string {

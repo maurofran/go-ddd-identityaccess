@@ -69,7 +69,7 @@ func (fn *FullName) WithChangedLastName(lastName string) (*FullName, error) {
 // Equals will check if provided other object is equal to the receiver one.
 func (fn *FullName) Equals(other interface{}) bool {
 	ofn, ok := other.(*FullName)
-	return ok && fn.firstName == ofn.firstName && fn.lastName == ofn.lastName
+	return ok && ofn != nil && fn.firstName == ofn.firstName && fn.lastName == ofn.lastName
 }
 
 func (fn *FullName) String() string {

@@ -81,7 +81,7 @@ func (pa *PostalAddress) CountryCode() string {
 
 func (pa *PostalAddress) Equals(other interface{}) bool {
 	opa, ok := other.(*PostalAddress)
-	return ok && pa.streetName == opa.streetName && pa.buildingNumber == opa.buildingNumber &&
+	return ok && opa != nil && pa.streetName == opa.streetName && pa.buildingNumber == opa.buildingNumber &&
 		pa.postalCode == opa.postalCode && pa.city == opa.city && pa.stateProvince == opa.stateProvince &&
 		pa.countryCode == opa.countryCode
 }

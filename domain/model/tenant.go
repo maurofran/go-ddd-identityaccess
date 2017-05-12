@@ -106,7 +106,7 @@ func (t *Tenant) setActive(active bool) error {
 // Equals will check if this tenant is equal to provided object.
 func (t *Tenant) Equals(other interface{}) bool {
 	ot, ok := other.(*Tenant)
-	return ok && t.tenantID.Equals(ot.tenantID) && t.name == ot.name
+	return ok && ot != nil && t.tenantID.Equals(ot.tenantID) && t.name == ot.name
 }
 
 func (t *Tenant) String() string {

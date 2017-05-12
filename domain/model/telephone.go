@@ -37,7 +37,7 @@ func (t *Telephone) Number() string {
 
 func (t *Telephone) Equals(other interface{}) bool {
 	ot, ok := other.(*Telephone)
-	return ok && ot.number == t.number
+	return ok && ot != nil && ot.number == t.number
 }
 
 func (t *Telephone) String() string {
