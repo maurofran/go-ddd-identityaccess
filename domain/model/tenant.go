@@ -59,21 +59,21 @@ func (t *Tenant) Active() bool {
 }
 
 // Activate will activate the receiver tenant if it's not already active.
-func (t *Tenant) Activate() []DomainEvent {
+func (t *Tenant) Activate() DomainEvents {
 	if !t.Active() {
 		t.setActive(true)
 		return anEvent(tenantActivated(t.tenantID))
 	}
-	return noEvents
+	return noEvents()
 }
 
 // Deactivate will deactivate the receiver tenant if it's not already active.
-func (t *Tenant) Deactivate() []DomainEvent {
+func (t *Tenant) Deactivate() DomainEvents {
 	if t.Active() {
 		t.setActive(false)
 		return anEvent(tenantDeactivated(t.tenantID))
 	}
-	return noEvents
+	return noEvents()
 }
 
 func (t *Tenant) setTenantID(tenantID *TenantID) error {

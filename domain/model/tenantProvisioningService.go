@@ -20,8 +20,8 @@ func (tps *TenantProvisioningService) ProvisionTenant(
 	postalAddress *PostalAddress,
 	primaryTelephone *Telephone,
 	secondaryTelephone *Telephone,
-) ([]DomainEvent, error) {
-	var events []DomainEvent
+) (DomainEvents, error) {
+	events := noEvents()
 	tenantID, err := tps.TenantRepository.NextIdentity()
 	if err != nil {
 		return nil, errors.Wrap(err, "an error occurred while generating new tenant ID")
@@ -33,14 +33,14 @@ func (tps *TenantProvisioningService) ProvisionTenant(
 	if err = tps.TenantRepository.Add(ctx, tenant); err != nil {
 		return nil, errors.Wrapf(err, "an error occurred while adding tenant %s to repository", tenant)
 	}
-	events = append(events, tenantProvisioned(tenantID))
+	events = events.and(tenantProvisioned(tenantID))
 
 	ev, err := tps.registerAdministratorFor(tenant, administratorName, emailAddress, postalAddress, primaryTelephone,
 		secondaryTelephone)
 	if err != nil {
 		return nil, errors.Wrapf(err, "an error occurred while registering administrator for %s", tenant)
 	}
-	events = append(events, ev...)
+	events = events.and(ev...)
 	return events, nil
 }
 
@@ -51,6 +51,6 @@ func (tps *TenantProvisioningService) registerAdministratorFor(
 	postalAddress *PostalAddress,
 	primaryTelephone *Telephone,
 	secondaryTelephone *Telephone,
-) ([]DomainEvent, error) {
+) (DomainEvents, error) {
 	return nil, nil
 }
