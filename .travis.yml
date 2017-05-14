@@ -9,9 +9,11 @@ branches:
     - develop
 services:
   - mongodb
+  - redis-server
 install:
   - go get gopkg.in/mgo.v2
   - go get gopkg.in/go-playground/validator.v9
+  - go get github.com/go-redis/redis
   - go get github.com/gorilla/mux
   - go get github.com/Sirupsen/logrus
   - go get github.com/facebookgo/inject
