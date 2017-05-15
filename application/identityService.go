@@ -13,6 +13,7 @@ import (
 // IdentityService is the application service used to manage identities.
 type IdentityService struct {
 	Validate                  *validator.Validate              `inject:""`
+	Publisher                 model.DomainEventPublisher       `inject:""""`
 	TenantRepository          *model.TenantRepository          `inject:""`
 	TenantProvisioningService *model.TenantProvisioningService `inject:""`
 }
@@ -63,7 +64,7 @@ func (ias *IdentityService) ProvisionTenant(ctx context.Context, command *comman
 			return errors.Wrap(err, "an error occurred while creating administrator secondary telephone")
 		}
 	}
-	_, err = ias.TenantProvisioningService.ProvisionTenant(
+	events, err := ias.TenantProvisioningService.ProvisionTenant(
 		ctx,
 		command.TenantName,
 		command.TenantDescription,
@@ -73,6 +74,7 @@ func (ias *IdentityService) ProvisionTenant(ctx context.Context, command *comman
 		primaryTelephone,
 		secondaryTelephone,
 	)
+	ias.Publisher.Publish(events)
 	return err
 }
 
@@ -85,10 +87,11 @@ func (ias *IdentityService) ActivateTenant(ctx context.Context, command *command
 	if err != nil {
 		return errors.Wrapf(err, "an error occurred while activating tenant with id %s", command.TenantID)
 	}
-	tenant.Activate()
+	events := tenant.Activate()
 	if err = ias.TenantRepository.Update(ctx, tenant); err != nil {
 		return errors.Wrapf(err, "an error occurred while activating tenant with id %s", command.TenantID)
 	}
+	ias.Publisher.Publish(events)
 	return nil
 }
 
@@ -101,10 +104,11 @@ func (ias *IdentityService) DeactivateTenant(ctx context.Context, command *comma
 	if err != nil {
 		return errors.Wrapf(err, "an error occurred while deactivating tenant with id %s", command.TenantID)
 	}
-	tenant.Deactivate()
+	events := tenant.Deactivate()
 	if err = ias.TenantRepository.Update(ctx, tenant); err != nil {
 		return errors.Wrapf(err, "an error occurred while deactivating tenant with id %s", command.TenantID)
 	}
+	ias.Publisher.Publish(events)
 	return nil
 }
 

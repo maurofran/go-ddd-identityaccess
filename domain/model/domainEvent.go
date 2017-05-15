@@ -28,6 +28,11 @@ func (d DomainEvents) and(event... DomainEvent) DomainEvents {
 	return append(d, event...)
 }
 
+// DomainEventPublisher is the interface used to publish events.
+type DomainEventPublisher interface {
+	Publish(events DomainEvents)
+}
+
 // Base class for domain events
 type domainEvent struct {
 	ts time.Time

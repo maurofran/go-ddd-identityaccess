@@ -33,6 +33,10 @@ func init() {
 	log.Level = logrus.DebugLevel
 }
 
+type noOpPublisher struct {}
+
+func (p *noOpPublisher) Publish(events model.DomainEvents) {}
+
 func main() {
 	g := inject.Graph{Logger: log}
 
@@ -67,6 +71,7 @@ func main() {
 		&inject.Object{Value: db},
 		&inject.Object{Value: validator.New()},
 		&inject.Object{Value: router},
+		&inject.Object{Value: &noOpPublisher{}},
 	)
 
 	log.Info("Setting up persistence layer.")
