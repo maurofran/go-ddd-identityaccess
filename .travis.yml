@@ -11,6 +11,7 @@ services:
   - mongodb
   - redis-server
 install:
+  - go get golang.org/x/crypto/bcrypt
   - go get gopkg.in/mgo.v2
   - go get gopkg.in/go-playground/validator.v9
   - go get github.com/go-redis/redis
