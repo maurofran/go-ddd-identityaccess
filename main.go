@@ -7,6 +7,7 @@ import (
 	"github.com/maurofran/go-ddd-identityaccess/application"
 	"github.com/maurofran/go-ddd-identityaccess/domain/model"
 	"github.com/maurofran/go-ddd-identityaccess/infrastructure/persistence"
+	"github.com/maurofran/go-ddd-identityaccess/infrastructure/service"
 	"github.com/maurofran/go-ddd-identityaccess/resource"
 	"gopkg.in/go-playground/validator.v9"
 	"gopkg.in/mgo.v2"
@@ -30,10 +31,10 @@ var log = logrus.New()
 func init() {
 	log.Formatter = &logrus.JSONFormatter{}
 	log.Out = os.Stdout
-	log.Level = logrus.DebugLevel
+	log.Level = logrus.InfoLevel
 }
 
-type noOpPublisher struct {}
+type noOpPublisher struct{}
 
 func (p *noOpPublisher) Publish(events model.DomainEvents) {}
 
@@ -77,6 +78,10 @@ func main() {
 	log.Info("Setting up persistence layer.")
 
 	g.Provide(&inject.Object{Value: new(persistence.TenantStore)})
+
+	log.Info("Setting up service layer.")
+
+	g.Provide(&inject.Object{Value: new(service.BCryptEncryptionService)})
 
 	log.Info("Setting up domain layer repositories.")
 
